@@ -91,8 +91,7 @@ function getRandomUniqueMessages(count) {
 
     return uniqueMessages;
 }
-
-function typewriterReplaceText(element, newValue, deleteSpeed = 100, typeSpeed = 100) {
+function typewriterReplaceText(element, newValue, deleteSpeed = 100, typeSpeed = 100, callback) {
     // Ensure newValue is a string
     newValue = String(newValue);
 
@@ -115,26 +114,26 @@ function typewriterReplaceText(element, newValue, deleteSpeed = 100, typeSpeed =
         if (typeIndex < newValue.length) {
             element.textContent += newValue.charAt(typeIndex++);
             setTimeout(typeText, typeSpeed); // Use custom type speed
+        } else if (callback) {
+            callback(); // Call the callback function when done
         }
     }
 
     deleteText(); // Start with deleting the current text
 }
 
-
-// Example usage
-console.log(getRandomUniqueMessages(3));
-
 document.getElementById("next").onclick = () => {
-    // Array.from(document.getElementsByClassName("bouncing-text")).forEach((element)=>{element.remove()})
-    // const pickedMessages = getRandomUniqueMessages(3); // Get 3 unique messages
-    // pickedMessages.forEach(message => {
-    //     createMovingText(message, Math.random() * 1 + 1, 0); // Random speed between 2 and 4
-    // });
-    typewriterReplaceText(document.getElementById("qoute"), getRandomUniqueMessages(1), 10, 40)
+    const button = document.getElementById("next");
+    const quoteElement = document.getElementById("qoute");
+
+    // Disable the button during the animation
+    button.disabled = true;
+
+    // Replace text with typewriter effect and re-enable the button after completion
+    typewriterReplaceText(quoteElement, getRandomUniqueMessages(1), 10, 40, () => {
+        button.disabled = false; // Re-enable the button after animation
+    });
 };
-
-
 
 
 function createMovingText(text, speed = 3, bounciness = 10, maxLength = 25) {
